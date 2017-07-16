@@ -25,120 +25,94 @@ import static it.uniroma1.lcl.curiosone.Chat.WIDTH;
 
 public class FinestraChat extends State {
     //private Game game;
-    private Stage stage;
-	private ArrayList<Label> storico;
-	private TextField barraChat;
-    private TextButton send;
-    private TextField inserimento;
-    private Skin barra;
-    private Texture goku;
-    private Texture space;
-    private Label messaggio;
-    private boolean bot=true;
-   // private final TextButton button;
-    private int i;
+  private Stage stage;
+  private ArrayList<Label> storico;
+  private TextField barraChat;
+  private TextButton send;
+  private TextField inserimento;
+  private Skin barra;
+  private Texture goku;
+  private Texture space;
+  private Label messaggio;
+  private boolean bot=true;
+ // private final TextButton button;
+  private int i;
+  public FinestraChat(GameStateManager gsm,ArrayList<Label> storico) {
+  	super(gsm);
+    goku=new Texture("gokuBlue.png");
+    space=new Texture("Space.png");
+  	this.storico=storico;
+  	barra = new Skin(Gdx.files.internal("uiskin.json"));
+    stage = new Stage();
+    Gdx.input.setInputProcessor(stage);
+    send=new TextButton("send",barra);
+    send.setPosition((WIDTH/12)*9,HEIGHT/2);
+    send.setSize((WIDTH/12)*2,HEIGHT/18);
 
+    Gdx.input.setOnscreenKeyboardVisible(true);
 
-
-
-	public FinestraChat(GameStateManager gsm,ArrayList<Label> storico) {
-		super(gsm);
-        goku=new Texture("gokuBlue.png");
-        space=new Texture("Space.png");
-		this.storico=storico;
-		barra = new Skin(Gdx.files.internal("uiskin.json"));
-       // this.game=game;
-        stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
-        send=new TextButton("send",barra);
-        send.setPosition(350,300);
-        send.setSize(70,30);
-
-        Gdx.input.setOnscreenKeyboardVisible(true);
-
-        inserimento = new TextField("",barra);
-        inserimento.setPosition(send.getX()-(inserimento.getWidth()*2)-25,send.getY());
-        inserimento.setSize((WIDTH/2-send.getWidth())*2-25,30);
-        stage.addActor(inserimento);
-
-        messaggio = new Label("",barra);
-
-
-
-        stage.addActor(send);
-
-
-
-
-	}
+    inserimento = new TextField("",barra);
+    inserimento.setPosition(send.getX()-(WIDTH/12)*7,send.getY());
+    inserimento.setSize((WIDTH/12)*7,send.getHeight());
+    stage.addActor(inserimento);
+    messaggio = new Label("",barra);
+    stage.addActor(send);
+  }
 
 	@Override
 	public void handleInput() {
-
-       send.addListener(new ClickListener(){
-            @Override
-            public void touchUp(InputEvent e, float x, float y, int point,int button)
-            {
-                if(i==0)
-                {
-                    aggiornaPosizione();
-                    messaggio.setText(inserimento.getText());
-                    storico.add(messaggio);
-                    messaggio.setPosition(utenteBot(inserimento.getText()), inserimento.getY() + messaggio.getHeight() + 50);
-
-                    messaggio.setSize(50, 50);//fare in modo che sia in grado di contenere x caratteri per riga
-                    bot = !bot;
-                    inserimento.setText("");
-                    i=1;
-                }
-
-            }
-        });
+    send.addListener(new ClickListener(){
+      @Override
+      public void touchUp(InputEvent e, float x, float y, int point,int button) {
+        if(i==0) {
+          aggiornaPosizione();
+          messaggio.setText(inserimento.getText());
+          for(Label i : storico) i.setY(i.getY()-(HEIGHT/5));
+          storico.add(messaggio);
+          messaggio.setPosition(utenteBot(inserimento.getText()), inserimento.getY() + messaggio.getHeight() + 50);
+          messaggio.setSize(70, 70);//fare in modo che sia in grado di contenere x caratteri per riga            bot = !bot;
+          inserimento.setText("");
+          i=1;
+          bot=!bot;
+        }
+      }
+    });
 	}
 
 	@Override
 	public void update(float dt) {
-        i=0;
-        if(send.isOver())
-        handleInput();
-        Gdx.gl.glClearColor(1, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        stage.act(dt);
-        stage.draw();
-		
+    i=0;
+    if(send.isOver())
+    handleInput();
+    Gdx.gl.glClearColor(1, 0, 0, 1);
+    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    stage.act(dt);
+    stage.draw();
 	}
 
 	@Override
 	public void render(SpriteBatch sb) {
-
-		sb.begin();
-        sb.draw(space,0,0,WIDTH,HEIGHT);
-        sb.draw(goku,WIDTH/4,HEIGHT/4,WIDTH/2,HEIGHT/2);
-        inserimento.draw(sb,1.0f);
-        send.draw(sb,1.0f);
-        messaggio.draw(sb,1.0f);
-		sb.end();
-		
+    sb.begin();
+    sb.draw(space,0,0,WIDTH,HEIGHT);
+    sb.draw(goku,WIDTH/4,HEIGHT/4,WIDTH/2,HEIGHT/2);
+    inserimento.draw(sb,1.0f);
+    send.draw(sb,1.0f);
+    messaggio.draw(sb,1.0f);
+    sb.end();
 	}
 
 	@Override
-	public void dispose()
-    {
-        goku.dispose();
-        space.dispose();
-
+	public void dispose() {
+    goku.dispose();
+    space.dispose();
 	}
 
-    public void aggiornaPosizione()
-    {
+  public void aggiornaPosizione() {
         //spostare in alto la label in base alla dimensione del proprio messaggio ed a x pixel
         //dalla barra del messaggio e y pixel decisi per avere uno spazio tra messaggi
-    }
+  }
 
-    public int utenteBot(String s)
-    {
-        return bot? (10):((WIDTH-(s.length()*10))+10);
-    }
-
+  public int utenteBot(String s) {
+      return bot? (10):((WIDTH-(s.length()*10))+10);
+  }
 }

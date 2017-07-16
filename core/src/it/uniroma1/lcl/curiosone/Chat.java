@@ -25,7 +25,7 @@ public class Chat extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
-		//resize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+		resize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 		storico=new ArrayList<Label>();
 		batch = new SpriteBatch();
 		gsm=new GameStateManager();
